@@ -1,31 +1,44 @@
-
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.prod';
-import { Usuario } from '../model/Usuario';
 import { UsuarioLogin } from '../model/UsuarioLogin';
+import { Usuario } from '../model/Usuario';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(
-    private http: HttpClient
-    ) { }
+  constructor(private http: HttpClient) { }
 
-  entrar(usuarioLogin: UsuarioLogin): Observable<UsuarioLogin>{
-    return this.http.post<UsuarioLogin>('http://localhost:8080/usuario/logar', usuarioLogin)
-
+  token = {
+    headers: new HttpHeaders().set('Authorization', environment.token)
   }
 
-  cadastrar(usuario: Usuario): Observable<Usuario>{
-    return this.http.post<Usuario>('http://localhost:8080/usuario/cadastrar', usuario)
+  //O Observable mapeia o retorno do médoto.
+  logar(userLogin: UsuarioLogin): Observable<UsuarioLogin>{
+    return this.http.post<UsuarioLogin>(`${environment.server}/usuarios/logar`, userLogin)
   }
 
-  logado(){
-    let ok: boolean = false
+  cadastrar(user: Usuario): Observable<Usuario>{
+    return this.http.post<Usuario>(`${environment.server}/usuarios/cadastrar`, user)
+  }
+
+  getAllUsers(): Observable<Usuario[]>{
+    return this.http.get<Usuario[]>(`${environment.server}/usuarios`, this.token)
+  }
+
+  getByIdUser(id: number): Observable<Usuario>{
+    return this.http.get<Usuario>(`${environment.server}/usuarios/${id}`, this.token)
+  }
+
+  putUser(user: Usuario) : Observable<Usuario>{
+    return this.http.put<Usuario>(`${environment.server}/usuarios`, user, this.token)
+  }
+
+  menu(){
+    let ok = false
 
     if(environment.token != ''){
       ok = true
@@ -33,4 +46,6 @@ export class AuthService {
 
     return ok
   }
+
+
 }
