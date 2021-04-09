@@ -1,7 +1,10 @@
 export const environment = {
   production: true,
   token: '',
-  nome: '',
-  idUsuario: 0,
-  foto: ''
-}
+  nomeUser: '',
+  fotoUser: '',
+  tipoUser: '',
+  idUser: 0,
+  server: 'http://localhost:8080'
+};
+
